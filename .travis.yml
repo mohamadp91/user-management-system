@@ -1,0 +1,12 @@
+language: java
+jdk:
+  - openjdk11
+
+before_install:
+  - mvn -N io.takari:maven:wrapper
+
+before_script:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+script:
+  - mvn test -B
