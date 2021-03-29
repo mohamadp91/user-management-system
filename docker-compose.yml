@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  app:
+    depends_on:
+      - postgre
+    build:
+      context: .
+      target: app
+    ports:
+      - 8081:8081
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgre:5432/user
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  postgre:
+    container_name: postgre
+    restart: always
+    image: postgres:alpine
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=user
