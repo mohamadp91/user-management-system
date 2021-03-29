@@ -2,6 +2,9 @@ language: java
 jdk:
   - openjdk11
 
+services:
+  - docker
+
 before_install:
   - mvn -N io.takari:maven:wrapper
 
@@ -10,3 +13,4 @@ before_script:
 
 script:
   - mvn test -B
+  - docker-compose up --detach
