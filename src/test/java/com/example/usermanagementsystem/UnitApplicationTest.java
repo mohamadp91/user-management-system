@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,9 +34,29 @@ class UnitApplicationTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @MockBean
     private UserController userController;
+
+    private long id = 1;
+
+    @Test
+    void shouldAddUser() throws Exception {
+
+        Date date = new Date();
+        UserModel user = new UserModel("ali","ahmadi", date.toString(), "gmail@gmail.com");
+
+
+        when(userController.addUser(user)).thenReturn(user);
+
+        String requestJson = JSONValue.toJSONString(user);
+
+        this.mockMvc.perform(post("/users")
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
 
     @Test
     void shouldGetUsers() throws Exception {
@@ -42,21 +64,22 @@ class UnitApplicationTest {
         Date date = new Date();
 
         List<UserModel> users = new ArrayList<>();
-        UserModel user = new UserModel("1", "ali", date.toString(), "gmail@gmail.com");
-        UserModel user2 = new UserModel("2", "reza", date.toString(), "hello@gmail.com");
+        UserModel user = new UserModel("ali","ahmadi", date.toString(), "gmail@gmail.com");
+        UserModel user2 = new UserModel("reza","ahmadi", date.toString(), "hello@gmail.com");
 
         users.add(user);
         users.add(user2);
 
         when(userController.getAllUsers()).thenReturn(users);
-        RequestBuilder request = MockMvcRequestBuilders.get("/users").accept(MediaType.APPLICATION_JSON);
-        String jsonText = JSONValue.toJSONString(users);
 
-        MvcResult result = this.mockMvc.perform(request)
+
+        String requestJson = JSONValue.toJSONString(user);
+
+        this.mockMvc.perform(get("/users/" + id)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonText))
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -64,47 +87,18 @@ class UnitApplicationTest {
 
         Date date = new Date();
 
-        UserModel user = new UserModel("1", "ali", date.toString(), "gmail@gmail.com");
+        UserModel user = new UserModel("ali","ahmadi", date.toString(), "gmail@gmail.com");
 
 
-        when(userController.getUserById("1")).thenReturn(java.util.Optional.of(user));
-        RequestBuilder request = MockMvcRequestBuilders
-                .get("/user")
-                .param("id", "1")
-                .accept(MediaType.APPLICATION_JSON);
+        when(userController.getUserById(id)).thenReturn(java.util.Optional.of(user));
 
-        String jsonText = JSONValue.toJSONString(user);
+        String requestJson = JSONValue.toJSONString(user);
 
-        MvcResult result = this.mockMvc.perform(request)
+        this.mockMvc.perform(get("/users/" + id)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonText))
-                .andReturn();
-    }
-
-    @Test
-    void shouldAddUser() throws Exception {
-
-        Date date = new Date();
-        UserModel user = new UserModel("1", "ali", date.toString(), "gmail@gmail.com");
-
-
-        when(userController.addUser(user.getId(), user.getName(), user.getEmailAddress())).thenReturn(user);
-
-        RequestBuilder request = MockMvcRequestBuilders
-                .post("/users")
-                .param("id", user.getId())
-                .param("name", user.getName())
-                .param("emailAddress", user.getEmailAddress())
-                .accept(MediaType.APPLICATION_JSON);
-
-        String jsonText = JSONValue.toJSONString(user);
-
-        MvcResult result = this.mockMvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonText))
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
 
@@ -112,22 +106,18 @@ class UnitApplicationTest {
     void shouldDeleteUserById() throws Exception {
 
         Date date = new Date();
-        UserModel user = new UserModel("1", "ali", date.toString(), "gmail@gmail.com");
+        UserModel user = new UserModel("ali","ahmadi", date.toString(), "gmail@gmail.com");
 
 
-        when(userController.deleteUser("1")).thenReturn(java.util.Optional.of(user));
-        RequestBuilder request = MockMvcRequestBuilders
-                .delete("/users")
-                .param("id", "1")
-                .accept(MediaType.APPLICATION_JSON);
+        when(userController.deleteUser(id)).thenReturn(java.util.Optional.of(user));
 
-        String jsonText = JSONValue.toJSONString(user);
+        String requestJson = JSONValue.toJSONString(user);
 
-        MvcResult result = this.mockMvc.perform(request)
+        this.mockMvc.perform(delete("/users/" + id)
+                .contentType(APPLICATION_JSON_UTF8)
+                .content(requestJson))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonText))
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
 }

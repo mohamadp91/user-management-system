@@ -26,7 +26,7 @@ To download and install on other operating systems  [click here](https://www.pos
 
 To run the server:
 
-`sudo sevice postgresql start`
+`sudo service postgresql start`
 
 There are a few ways to utilize this account to access Postgres. One way is to switch over to the postgres account on 
 your server and access the Postgres prompt by typing:
@@ -53,6 +53,8 @@ To show databases, run the following commands.
 To connect to _**user-management-system**_ Database use PostgreSQL database command:
 > postgres=# `\c user-management-system;`
 
+TO show all tables:
+> postgres=# `\dt`
 ## Configuration file
 First open the project and go to _**src/main/resources**_ directory:
  
@@ -114,12 +116,32 @@ server.port=8081
  
  to add a user :
  
- `curl -X POST -d 'id'='1' -d 'name'='ali' -d 'emailAddress'='hello@gmail.com' http://localhost:8081/users`
+ `curl  -H "Content-type":"application/json" -X POST -d '{"firstName":"ali","lastName":"ahmadi","emailAddress":"hello@gmail.com"}' http://localhost:8081/users`
  
  To get a user by id :
  
- `curl -X GET -G http://localhost:8081/user -d 'id'='1'`
+ `curl -X GET -G http://localhost:8081/users/1`
  
  To delete a user by id:
  
- `curl -X DELETE -G http://localhost:8081/users -d 'id'='1'`
+ `curl -X DELETE -G http://localhost:8081/users/1`
+ 
+ ## Flyway
+ Flyway is an open-source database migration tool. It strongly favors simplicity and convention over configuration.
+ [more details and documentation](https://flywaydb.org/documentation/)
+ ___
+ To config flyway please add below configurations to _**application.properties**_:
+ 
+ 
+ ```
+ flyway.url=jdbc:postgresql://localhost:5432
+
+ flyway.schemas=user-management-system
+
+ flyway.user=spring_user
+
+ flyway.password=spring_user
+
+ spring.flyway.baseline-on-migrate=true
+
+ ```

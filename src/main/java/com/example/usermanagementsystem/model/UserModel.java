@@ -1,60 +1,75 @@
 package com.example.usermanagementsystem.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 @Entity
-@Table(name = "users_tb")
+@Table(name = "users")
 public class UserModel {
 
 
     @Id
-    private String id;
+    @Column(name = "id",unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "firstname")
+    private String firstName;
 
-    @Column(name = "dataCreated")
-    private String dataCreated;
+    @Column(name = "lastname")
+    private String lastName;
 
-    @Column(name = "emailAddress")
+    @Column(name = "creationtime")
+    private String creationTime;
+
+    @Column(name = "emailaddress")
     private String emailAddress;
 
     public UserModel() {
     }
 
-    public UserModel(String id, String name, String dataCreated, String emailAddress) {
-        this.id = id;
-        this.name = name;
-        this.dataCreated = dataCreated;
+    public UserModel(String firstName, String lastName, String emailAddress){
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.emailAddress = emailAddress;
     }
 
-    public String getId() {
+    public UserModel(String firstName, String lastName, String creationTime, String emailAddress) {
+        Long id = getId();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.creationTime = creationTime;
+        this.emailAddress = emailAddress;
+    }
+
+
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getName() {
-        return name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getDataCreated() {
-        return dataCreated;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setDataCreated(String dataCreated) {
-        this.dataCreated = dataCreated;
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(String dataCreated) {
+        this.creationTime = dataCreated;
     }
 
     public String getEmailAddress() {
@@ -65,5 +80,3 @@ public class UserModel {
         this.emailAddress = emailAddress;
     }
 }
-
-
