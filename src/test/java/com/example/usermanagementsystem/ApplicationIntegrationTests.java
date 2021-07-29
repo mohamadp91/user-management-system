@@ -42,13 +42,15 @@ public class ApplicationIntegrationTests {
     @Test
     public void shouldAddUser() throws Exception {
 
-        HttpEntity<?> entity = new HttpEntity<>(headers);
 
         UserModel user = new UserModel("1", "ali", new Date().toString(), "hello@gamil.com");
 
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/users")
-                .queryParam("id", user.getId())
-                .queryParam("name",user.getName())
+                .queryParam("id", user.getFirstName())
+                .queryParam("firstName", user.getFirstName())
+                .queryParam("lastName",user.getLastName())
                 .queryParam("emailAddress",user.getEmailAddress());
 
 
