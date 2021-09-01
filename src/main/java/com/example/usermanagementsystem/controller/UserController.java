@@ -4,6 +4,7 @@ import com.example.usermanagementsystem.model.UserModel;
 import com.example.usermanagementsystem.repository.UserRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -14,6 +15,19 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Value("DATABASE_IS_DISCONNECT")
+    private String DATABASE_IS_DISCONNECT;
+
+    @GetMapping("/check_connection")
+    @CircuitBreaker(name = "main", fallbackMethod = "checkFallback")
+    public String checkConnection() {
+        userRepository.findAll();
+        return "alive";
+    }
+
+    public String checkFallback(Throwable t) {
+        return DATABASE_IS_DISCONNECT;
+    }
 
     @GetMapping("/users")
     @CircuitBreaker(name = "main", fallbackMethod = "getAllUsersFallback")
@@ -66,7 +80,7 @@ public class UserController {
         return userModel;
     }
 
-    public UserModel deleteUserFallback(Throwable t){
+    public UserModel deleteUserFallback(Throwable t) {
         return new UserModel();
     }
 
