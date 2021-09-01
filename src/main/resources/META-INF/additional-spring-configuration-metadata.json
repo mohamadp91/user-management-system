@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "instances.getUserById.automaticTransitionFromOpenToHalfOpenEnabled",
+      "type": "java.lang.String",
+      "description": "Description for instances.getUserById.automaticTransitionFromOpenToHalfOpenEnabled."
+  }
+] }

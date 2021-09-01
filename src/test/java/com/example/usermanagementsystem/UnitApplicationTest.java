@@ -90,7 +90,7 @@ class UnitApplicationTest {
         UserModel user = new UserModel("ali","ahmadi", date.toString(), "gmail@gmail.com");
 
 
-        when(userController.getUserById(id)).thenReturn(java.util.Optional.of(user));
+        when(userController.getUserById(id)).thenReturn(user);
 
         String requestJson = JSONValue.toJSONString(user);
 
@@ -109,7 +109,7 @@ class UnitApplicationTest {
         UserModel user = new UserModel("ali","ahmadi", date.toString(), "gmail@gmail.com");
 
 
-        when(userController.deleteUser(id)).thenReturn(java.util.Optional.of(user));
+        when(userController.deleteUser(id)).thenReturn(user);
 
         String requestJson = JSONValue.toJSONString(user);
 
