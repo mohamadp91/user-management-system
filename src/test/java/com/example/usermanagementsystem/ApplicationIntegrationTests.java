@@ -43,14 +43,11 @@ public class ApplicationIntegrationTests {
     public void shouldAddUser() throws Exception {
 
 
-        UserModel user = new UserModel("ali", "rezaee", new Date().toString(), "hello@gamil.com");
+        UserModel user = new UserModel(1, "someone", "something", new Date().toString(), "hello@gamil.com");
 
-        HttpEntity<?> entity = new HttpEntity<>(headers);
+        HttpEntity<?> entity = new HttpEntity<UserModel>(user, headers);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/users")
-                .queryParam("firstName", user.getFirstName())
-                .queryParam("lastName",user.getLastName())
-                .queryParam("emailAddress",user.getEmailAddress());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/users");
 
 
         HttpEntity<String> response = restTemplate.exchange(
@@ -59,8 +56,9 @@ public class ApplicationIntegrationTests {
                 entity,
                 String.class);
 
-        assertTrue(userRepository.existsById(user.getId()));
+        String jsonTextExpected = JSONValue.toJSONString(user);
 
+        JSONAssert.assertEquals(jsonTextExpected, response.getBody(), false);
     }
 
     @Test
@@ -68,7 +66,7 @@ public class ApplicationIntegrationTests {
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        UserModel user = new UserModel("1", "ali", new Date().toString(), "hello@gamil.com");
+        UserModel user = new UserModel(2, "someone", "something", new Date().toString(), "something@gamil.com");
         List<UserModel> users = new ArrayList<>();
         users.add(user);
 
@@ -83,43 +81,39 @@ public class ApplicationIntegrationTests {
                 String.class);
 
         String jsonTextExpected = JSONValue.toJSONString(users);
-
         JSONAssert.assertEquals(jsonTextExpected, response.getBody(), false);
+
     }
 
     @Test
-    public void ShouldGetUserById() throws JSONException {
+    public void ShouldGetUserById() throws Exception {
+
+        UserModel user = new UserModel("someone", "something", new Date().toString(), "hello@gamil.com");
+        userRepository.save(user);
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        UserModel user = new UserModel("1", "ali", new Date().toString(), "hello@gamil.com");
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/user")
-                .queryParam("id", user.getId());
-
-        userRepository.save(user);
-
-        HttpEntity<String> response = restTemplate.exchange(
-                builder.build().encode().toUri(),
+        String url = "http://localhost:" + port + "/users/" + user.getId();
+        ResponseEntity<String> response = restTemplate.exchange(url,
                 HttpMethod.GET,
                 entity,
                 String.class);
 
         String jsonTextExpected = JSONValue.toJSONString(user);
-
         JSONAssert.assertEquals(jsonTextExpected, response.getBody(), false);
+        assertTrue(userRepository.existsById(user.getId()));
+
     }
 
 
     @Test
     public void shouldDeleteUserById() throws Exception {
 
+        UserModel user = new UserModel(1, "1", "ali", new Date().toString(), "hello@gamil.com");
+
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        UserModel user = new UserModel("1", "ali", new Date().toString(), "hello@gamil.com");
-
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/users")
-                .queryParam("id",user.getId());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + "/users/" + user.getId());
 
         userRepository.save(user);
 
@@ -130,6 +124,7 @@ public class ApplicationIntegrationTests {
                 String.class);
 
         String jsonTextExpected = JSONValue.toJSONString(user);
+
 
         JSONAssert.assertEquals(jsonTextExpected, response.getBody(), false);
         assertFalse(userRepository.existsById(user.getId()));
