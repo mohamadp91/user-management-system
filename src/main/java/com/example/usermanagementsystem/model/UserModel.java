@@ -9,7 +9,7 @@ public class UserModel {
 
 
     @Id
-    @Column(name = "id",unique = true)
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
@@ -28,20 +28,26 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(String firstName, String lastName, String emailAddress){
+    public UserModel(String firstName, String lastName, String emailAddress) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
     }
 
     public UserModel(String firstName, String lastName, String creationTime, String emailAddress) {
-        Long id = getId();
         this.firstName = firstName;
         this.lastName = lastName;
         this.creationTime = creationTime;
         this.emailAddress = emailAddress;
     }
 
+    public UserModel(long id , String firstName, String lastName, String creationTime, String emailAddress) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.creationTime = creationTime;
+        this.emailAddress = emailAddress;
+    }
 
 
     public Long getId() {
